@@ -106,8 +106,13 @@
       const id = parsed.pathname.match(/\/video\/(\d+)/)?.[1];
       if (id) { embed = `https://www.tiktok.com/player/v1/${id}?controls=1`; platform = "TikTok"; }
     } else if (["instagram.com", "m.instagram.com"].includes(host)) {
-      const match = parsed.pathname.match(/\/(?:p|reel|reels|tv)\/([\w-]+)/);
-      if (match) { embed = `https://www.instagram.com/${parsed.pathname.split("/").filter(Boolean).slice(0, 2).join("/")}/embed/`; platform = "Instagram"; }
+      const match = parsed.pathname.match(/^\/(p|reel|reels|tv)\/([\w-]+)\/?$/i);
+      if (match) {
+        const kind = match[1].toLowerCase() === "reels" ? "reel" : match[1].toLowerCase();
+        const permalink = `https://www.instagram.com/${kind}/${match[2]}/`;
+        platform = "Instagram";
+        return `<div class="instagram-media-card${compact ? " compact" : ""}"><div class="instagram-source-label"><span class="instagram-glyph" aria-hidden="true">◎</span><span>Instagram <small>· vložený příspěvek</small></span></div><div class="media-preview instagram-preview${compact ? " compact" : ""}"><blockquote class="instagram-media" data-instgrm-permalink="${escapeHtml(permalink)}" data-instgrm-version="14" data-instgrm-captioned><a href="${escapeHtml(permalink)}" target="_blank" rel="noopener noreferrer">Zobrazit příspěvek na Instagramu</a></blockquote></div><a class="instagram-play-link" href="${escapeHtml(permalink)}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">▶</span> Přehrát / otevřít na Instagramu ↗</a></div>`;
+      }
     }
     if (!embed && /\.(mp4|webm|mov|m4v)(?:$|\?)/i.test(`${parsed.pathname}${parsed.search}`)) video = true;
     if (embed) return `<div class="media-preview${compact ? " compact" : ""}"><iframe src="${escapeHtml(embed)}" title="Náhled: ${escapeHtml(item.title)} (${platform})" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
@@ -118,6 +123,21 @@
     const linked = state.mediaItems.filter(item => item.cardId === card.id && (drillIndex === null ? item.drillIndex === null || item.drillIndex === undefined || item.drillIndex === "" : Number(item.drillIndex) === drillIndex));
     if (!linked.length) return "";
     return `<div class="linked-media-list">${linked.map(item => `<article class="linked-media"><h4>${escapeHtml(item.title)}</h4>${mediaPreviewMarkup(item, true)}${item.note ? `<p>${escapeHtml(item.note)}</p>` : ""}<a href="${escapeHtml(safeHttpsUrl(item.url))}" target="_blank" rel="noopener noreferrer">Otevřít původní zdroj ↗</a></article>`).join("")}</div>`;
+  }
+  function processInstagramEmbeds() {
+    if (!document.querySelector("blockquote.instagram-media")) return;
+    if (window.instgrm?.Embeds?.process) {
+      window.instgrm.Embeds.process();
+      return;
+    }
+    let script = document.getElementById("instagram-embed-script");
+    if (script) return;
+    script = document.createElement("script");
+    script.id = "instagram-embed-script";
+    script.async = true;
+    script.src = "https://www.instagram.com/embed.js";
+    script.onload = () => window.instgrm?.Embeds?.process();
+    document.head.append(script);
   }
   function openCard(id) {
     const card = cards.find(item => item.id === id);
@@ -143,6 +163,7 @@
         <section class="detail-section detail-sources full"><h3>Zdroje pravidel</h3>${card.sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)} ↗ <small>· ${escapeHtml(source.season)} · kontrola ${escapeHtml(formatDate(source.checked))}</small></a>`).join("")}<p>${escapeHtml(card.rulesNote)}</p><div class="detail-date">Obsah karty zkontrolován: ${escapeHtml(formatDate(card.updatedAt))}</div></section>
       </div>`;
     $("#card-dialog").showModal();
+    processInstagramEmbeds();
   }
   function sortPlans() {
     return [...state.plans].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
@@ -177,6 +198,7 @@
     const items = [...state.mediaItems].filter(item => safeHttpsUrl(item.url) && (filter === "all" || item.area === filter)).sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
     $("#media-count").textContent = state.mediaItems.length;
     $("#media-list").innerHTML = items.length ? items.map(item => { const url = safeHttpsUrl(item.url); const linkedCard = cards.find(card => card.id === item.cardId); const drill = linkedCard && item.drillIndex !== null && item.drillIndex !== undefined && item.drillIndex !== "" ? linkedCard.drills?.[Number(item.drillIndex)] : null; return `<article class="workspace-card media-card"><div class="workspace-card-top"><span class="area-pill">${item.area === "stunt" ? "Group stunt" : "Akrobacie"}</span><button class="plan-action" data-remove-media="${escapeHtml(item.id)}" aria-label="Odebrat odkaz">×</button></div>${mediaPreviewMarkup(item)}<h3>${escapeHtml(item.title)}</h3><p class="workspace-meta">${escapeHtml(linkedCard ? `${linkedCard.title}${drill ? ` · ${drill.title}` : ""}` : item.topic || "Bez přiřazeného prvku")} · přidáno ${escapeHtml(formatDate((item.createdAt || "").slice(0, 10)))}</p>${item.note ? `<p>${escapeHtml(item.note)}</p>` : ""}<a class="workspace-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Otevřít zdroj ↗<small>${escapeHtml(url)}</small></a></article>`; }).join("") : `<div class="empty-state"><div><div class="empty-symbol">▷</div>Zatím tu nejsou uložené žádné odkazy.<br>Přidej první materiál ze zdroje, který smíš používat.</div></div>`;
+    processInstagramEmbeds();
   }
   function populateMediaCardOptions(selected = "") {
     const select = $("#media-card");
