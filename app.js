@@ -105,6 +105,16 @@
     } else if (["tiktok.com", "m.tiktok.com"].includes(host)) {
       const id = parsed.pathname.match(/\/video\/(\d+)/)?.[1];
       if (id) { embed = `https://www.tiktok.com/player/v1/${id}?controls=1`; platform = "TikTok"; }
+    } else if (["facebook.com", "m.facebook.com", "fb.watch"].includes(host)) {
+      const path = parsed.pathname.toLowerCase();
+      const hasVideo = host === "fb.watch" || /\\/(?:videos?|reel|reels|watch|share\\/(?:r|v))(?:\\/|$)/.test(path) || path === "/video.php" || parsed.searchParams.has("v");
+      if (hasVideo || /\\/posts?\\/|\\/permalink\\.php|\\/share\\/p\\//.test(path)) {
+        const permalink = new URL(url);
+        if (permalink.hostname === "m.facebook.com") permalink.hostname = "www.facebook.com";
+        const endpoint = hasVideo ? "video" : "post";
+        embed = `https://www.facebook.com/plugins/${endpoint}.php?href=${encodeURIComponent(permalink.href)}&show_text=0&width=560`;
+        platform = "Facebook";
+      }
     } else if (["instagram.com", "m.instagram.com"].includes(host)) {
       const match = parsed.pathname.match(/^\/(p|reel|reels|tv)\/([\w-]+)\/?$/i);
       if (match) {
@@ -115,7 +125,7 @@
       }
     }
     if (!embed && /\.(mp4|webm|mov|m4v)(?:$|\?)/i.test(`${parsed.pathname}${parsed.search}`)) video = true;
-    if (embed) return `<div class="media-preview${compact ? " compact" : ""}"><iframe src="${escapeHtml(embed)}" title="Náhled: ${escapeHtml(item.title)} (${platform})" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+    if (embed) return `<div class="media-preview${compact ? " compact" : ""}${platform === "Facebook" ? " facebook-preview" : ""}"><iframe src="${escapeHtml(embed)}" title="Náhled: ${escapeHtml(item.title)} (${platform})" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
     if (video) return `<div class="media-preview${compact ? " compact" : ""}"><video controls playsinline preload="metadata" aria-label="Přehrát: ${escapeHtml(item.title)}"><source src="${escapeHtml(url)}">Přehrávání tohoto formátu tento prohlížeč nepodporuje.</video></div>`;
     return `<a class="media-preview-fallback" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"><span>↗</span><strong>Náhled není pro tento zdroj dostupný</strong><small>Otevřít na původním webu</small></a>`;
   }
