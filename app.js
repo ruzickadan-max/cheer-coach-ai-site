@@ -98,7 +98,7 @@
     let video = false;
     if (host === "youtu.be" || ["youtube.com", "m.youtube.com", "youtube-nocookie.com"].includes(host)) {
       const id = host === "youtu.be" ? parsed.pathname.split("/").filter(Boolean)[0] : parsed.searchParams.get("v") || parsed.pathname.match(/\/(?:shorts|embed|live)\/([^/?]+)/)?.[1];
-      if (id && /^[\w-]{11}$/.test(id)) { embed = `https://www.youtube-nocookie.com/embed/${id}`; platform = "YouTube"; }
+      if (id && /^[\w-]{11}$/.test(id)) { embed = `https://www.youtube.com/embed/${id}?playsinline=1&controls=1&rel=0`; platform = "YouTube"; }
     } else if (["vimeo.com", "player.vimeo.com"].includes(host)) {
       const id = parsed.pathname.match(/\/(?:video\/)?(\d+)/)?.[1];
       if (id) { embed = `https://player.vimeo.com/video/${id}`; platform = "Vimeo"; }
@@ -198,6 +198,20 @@
     const items = [...state.mediaItems].filter(item => safeHttpsUrl(item.url) && (filter === "all" || item.area === filter)).sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
     $("#media-count").textContent = state.mediaItems.length;
     $("#media-list").innerHTML = items.length ? items.map(item => { const url = safeHttpsUrl(item.url); const linkedCard = cards.find(card => card.id === item.cardId); const drill = linkedCard && item.drillIndex !== null && item.drillIndex !== undefined && item.drillIndex !== "" ? linkedCard.drills?.[Number(item.drillIndex)] : null; return `<article class="workspace-card media-card"><div class="workspace-card-top"><span class="area-pill">${item.area === "stunt" ? "Group stunt" : "Akrobacie"}</span><button class="plan-action" data-remove-media="${escapeHtml(item.id)}" aria-label="Odebrat odkaz">×</button></div>${mediaPreviewMarkup(item)}<h3>${escapeHtml(item.title)}</h3><p class="workspace-meta">${escapeHtml(linkedCard ? `${linkedCard.title}${drill ? ` · ${drill.title}` : ""}` : item.topic || "Bez přiřazeného prvku")} · přidáno ${escapeHtml(formatDate((item.createdAt || "").slice(0, 10)))}</p>${item.note ? `<p>${escapeHtml(item.note)}</p>` : ""}<a class="workspace-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Otevřít zdroj ↗<small>${escapeHtml(url)}</small></a></article>`; }).join("") : `<div class="empty-state"><div><div class="empty-symbol">▷</div>Zatím tu nejsou uložené žádné odkazy.<br>Přidej první materiál ze zdroje, který smíš používat.</div></div>`;
+    processInstagramEmbeds();
+  }
+  function renderMediaUrlPreview() {
+    const panel = $("#media-live-preview");
+    const container = $("#media-live-preview-content");
+    const url = safeHttpsUrl($("#media-url").value.trim());
+    if (!url) {
+      panel.hidden = true;
+      container.innerHTML = "";
+      return;
+    }
+    const title = $("#media-title").value.trim() || "Video";
+    panel.hidden = false;
+    container.innerHTML = mediaPreviewMarkup({ url, title });
     processInstagramEmbeds();
   }
   function populateMediaCardOptions(selected = "") {
@@ -570,6 +584,7 @@
   $("#export-button").addEventListener("click", exportAll);
   $("#search-input").addEventListener("input", renderLibrary);
   $("#media-filter").addEventListener("change", renderMedia);
+  $("#media-url").addEventListener("input", renderMediaUrlPreview);
   $("#media-card").addEventListener("change", event => populateMediaCardOptions(event.target.value));
   $("#media-form").addEventListener("submit", event => {
     event.preventDefault();
@@ -579,7 +594,7 @@
     const cardId = $("#media-card").value;
     const drillValue = $("#media-drill").value;
     state.mediaItems.push({ id: newId(), title: $("#media-title").value.trim(), url: url.href, area: $("#media-area").value, topic: $("#media-topic").value.trim(), cardId: cardId || null, drillIndex: cardId && drillValue !== "" ? Number(drillValue) : null, note: $("#media-note").value.trim(), createdAt: new Date().toISOString() });
-    saveState(); renderMedia(); event.target.reset(); toast("Odkaz byl uložen.");
+    saveState(); renderMedia(); event.target.reset(); $("#media-live-preview").hidden = true; $("#media-live-preview-content").innerHTML = ""; toast("Odkaz byl uložen.");
   });
   $("#group-form").addEventListener("submit", event => {
     event.preventDefault();
