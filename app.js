@@ -107,7 +107,7 @@
       if (id) { embed = `https://www.tiktok.com/player/v1/${id}?controls=1`; platform = "TikTok"; }
     } else if (["facebook.com", "m.facebook.com", "fb.watch"].includes(host)) {
       const path = parsed.pathname.toLowerCase();
-      const hasVideo = host === "fb.watch" || /\/(?:videos?|reel|reels|watch|share\/(?:r|v))(?:\/|$)/.test(path) || path === "/video.php" || parsed.searchParams.has("v");
+      const hasVideo = /\/(?:videos?|reel|reels|watch|share\/(?:r|v))(?:\/|$)/.test(path) || path === "/video.php" || parsed.searchParams.has("v");
       if (hasVideo || /\/posts?\/|\/permalink\.php|\/share\/p\//.test(path)) {
         const permalink = new URL(url);
         if (permalink.hostname === "m.facebook.com") permalink.hostname = "www.facebook.com";
@@ -170,7 +170,7 @@
         <section class="detail-section danger full"><h3>Stop-kritéria · zastav při</h3>${listMarkup(card.stopCriteria)}</section>
         <section class="detail-section"><h3>Regrese</h3><p>${escapeHtml(card.regression)}</p></section>
         <section class="detail-section safe"><h3>Bezpečný sestup</h3><p>${escapeHtml(card.safeExit)}</p></section>
-        <section class="detail-section detail-sources full"><h3>Zdroje pravidel</h3>${card.sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)} ↗ <small>· ${escapeHtml(source.season)} · kontrola ${escapeHtml(formatDate(source.checked))}</small></a>`).join("")}<p>${escapeHtml(card.rulesNote)}</p><div class="detail-date">Obsah karty zkontrolován: ${escapeHtml(formatDate(card.updatedAt))}</div></section>
+        <section class="detail-section detail-sources full"><h3>Zdroje a pravidla</h3>${card.sources.map(source => source.url ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)} ↗ <small>· ${escapeHtml(source.season)} · kontrola ${escapeHtml(formatDate(source.checked))}</small></a>` : `<span class="detail-source-text">${escapeHtml(source.title)} <small>· ${escapeHtml(source.season)} · kontrola ${escapeHtml(formatDate(source.checked))}</small></span>`).join("")}<p>${escapeHtml(card.rulesNote)}</p><div class="detail-date">Obsah karty zkontrolován: ${escapeHtml(formatDate(card.updatedAt))}</div></section>
       </div>`;
     $("#card-dialog").showModal();
     processInstagramEmbeds();
