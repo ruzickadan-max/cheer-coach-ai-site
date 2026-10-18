@@ -11,16 +11,22 @@
     return Number.isNaN(date.getTime()) ? "—" : new Intl.DateTimeFormat("cs-CZ", options).format(date);
   };
   const todayIso = () => new Date().toLocaleDateString("en-CA");
+  function safeHttpsUrl(value) {
+    try { const url = new URL(value); return url.protocol === "https:" ? url.href : ""; } catch { return ""; }
+  }
 
   function loadState() {
     try {
       const stored = JSON.parse(localStorage.getItem(KEY) || "{}");
       return {
         plans: Array.isArray(stored.plans) ? stored.plans : [],
-        customCards: Array.isArray(stored.customCards) ? stored.customCards : []
+        customCards: Array.isArray(stored.customCards) ? stored.customCards : [],
+        mediaItems: Array.isArray(stored.mediaItems) ? stored.mediaItems : [],
+        groups: Array.isArray(stored.groups) ? stored.groups : [],
+        routines: Array.isArray(stored.routines) ? stored.routines : []
       };
     } catch {
-      return { plans: [], customCards: [] };
+      return { plans: [], customCards: [], mediaItems: [], groups: [], routines: [] };
     }
   }
   function saveState() {
@@ -48,10 +54,13 @@
   function showView(name) {
     $$(".view").forEach(view => view.classList.toggle("active", view.id === `view-${name}`));
     $$(".nav-item").forEach(button => button.classList.toggle("active", button.dataset.view === name));
-    const labels = { home: "Přehled", library: "Knihovna karet", planner: "Plánovač", rules: "Pravidla & zdroje", settings: "Nastavení" };
+    const labels = { home: "Přehled", library: "Prvky a drily", media: "Videa a odkazy", groups: "Stunt groups", planner: "Tréninky", routines: "Sestavy", rules: "Pravidla & zdroje", settings: "Nastavení" };
     $("#crumb-current").textContent = labels[name] || labels.home;
     $(".sidebar").classList.remove("open");
     if (name === "planner") renderPlans();
+    if (name === "media") renderMedia();
+    if (name === "groups") renderGroups();
+    if (name === "routines") renderRoutines();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function renderLibrary() {
@@ -125,6 +134,21 @@
     }).join("") : `<div class="empty-state"><div><div class="empty-symbol">✳</div>Zatím nemáš uložený žádný nadcházející trénink.<br>Vytvoř plán a přidej první blok.</div></div>`;
     updateCounts();
   }
+  function renderMedia() {
+    const filter = $("#media-filter").value;
+    const items = [...state.mediaItems].filter(item => safeHttpsUrl(item.url) && (filter === "all" || item.area === filter)).sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+    $("#media-count").textContent = state.mediaItems.length;
+    $("#media-list").innerHTML = items.length ? items.map(item => { const url = safeHttpsUrl(item.url); return `<article class="workspace-card"><div class="workspace-card-top"><span class="area-pill">${item.area === "stunt" ? "Group stunt" : "Akrobacie"}</span><button class="plan-action" data-remove-media="${escapeHtml(item.id)}" aria-label="Odebrat odkaz">×</button></div><h3>${escapeHtml(item.title)}</h3><p class="workspace-meta">${escapeHtml(item.topic || "Bez přiřazeného tématu")} · přidáno ${escapeHtml(formatDate((item.createdAt || "").slice(0, 10)))}</p>${item.note ? `<p>${escapeHtml(item.note)}</p>` : ""}<a class="workspace-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Otevřít zdroj ↗<small>${escapeHtml(url)}</small></a></article>`; }).join("") : `<div class="empty-state"><div><div class="empty-symbol">▷</div>Zatím tu nejsou uložené žádné odkazy.<br>Přidej první materiál ze zdroje, který smíš používat.</div></div>`;
+  }
+  function renderGroups() {
+    $("#group-count").textContent = state.groups.length;
+    $("#groups-list").innerHTML = state.groups.length ? state.groups.map(group => `<article class="workspace-card"><div class="workspace-card-top"><span class="area-pill">Trenérská evidence</span><button class="plan-action" data-remove-group="${escapeHtml(group.id)}" aria-label="Odebrat skupinu">×</button></div><h3>${escapeHtml(group.name)}</h3>${group.roles?.length ? `<div class="role-tags">${group.roles.map(role => `<span>${escapeHtml(role)}</span>`).join("")}</div>` : `<p class="workspace-meta">Role zatím nejsou zapsané.</p>`}${group.note ? `<p>${escapeHtml(group.note)}</p>` : ""}<p class="workspace-meta">Vytvořeno ${escapeHtml(formatDate((group.createdAt || "").slice(0, 10)))}</p></article>`).join("") : `<div class="empty-state"><div><div class="empty-symbol">◎</div>Zatím neeviduješ žádnou stunt group.<br>Začni neidentifikujícím označením a rolemi.</div></div>`;
+  }
+  function renderRoutines() {
+    $("#routine-count").textContent = state.routines.length;
+    $("#routines-list").innerHTML = state.routines.length ? state.routines.map(routine => `<article class="workspace-card routine-card"><div class="workspace-card-top"><span class="area-pill">Koncept · ověřuje trenér</span><button class="plan-action" data-remove-routine="${escapeHtml(routine.id)}" aria-label="Odebrat osnovu">×</button></div><h3>${escapeHtml(routine.name)}</h3>${routine.goal ? `<p>${escapeHtml(routine.goal)}</p>` : ""}<ol class="routine-sequence">${routine.blocks.map(block => `<li>${escapeHtml(block)}</li>`).join("")}</ol>${routine.groups ? `<p class="workspace-meta">Skupiny: ${escapeHtml(routine.groups)}</p>` : ""}<p class="workspace-meta">Uloženo ${escapeHtml(formatDate((routine.createdAt || "").slice(0, 10)))}</p></article>`).join("") : `<div class="empty-state"><div><div class="empty-symbol">▤</div>Zatím tu není žádná osnova sestavy.<br>Přidej bloky v pořadí a dolaď je podle svého plánu.</div></div>`;
+  }
+  function newId() { return crypto.randomUUID ? crypto.randomUUID() : String(Date.now()); }
   function addBlockRow(block = {}) {
     const row = document.createElement("div");
     row.className = "block-row";
@@ -170,7 +194,10 @@
       exportedAt: new Date().toISOString(),
       plans: state.plans,
       cards,
-      customCards: state.customCards
+      customCards: state.customCards,
+      mediaItems: state.mediaItems,
+      groups: state.groups,
+      routines: state.routines
     });
     toast("Export dat je připraven.");
   }
@@ -183,7 +210,14 @@
     const validCards = data.customCards.every(card => card && typeof card === "object" && typeof card.id === "string" && typeof card.title === "string" && Array.isArray(card.levels) && Array.isArray(card.sources));
     if (!validPlans || !validCards) throw new Error("Záloha obsahuje neplatný plán nebo vlastní kartu.");
     if (new Set(data.customCards.map(card => card.id)).size !== data.customCards.length) throw new Error("Záloha obsahuje duplicitní identifikátory karet.");
-    return { plans: data.plans, customCards: data.customCards };
+    const mediaItems = Array.isArray(data.mediaItems) ? data.mediaItems : [];
+    const groups = Array.isArray(data.groups) ? data.groups : [];
+    const routines = Array.isArray(data.routines) ? data.routines : [];
+    const validMedia = mediaItems.every(item => item && typeof item.id === "string" && typeof item.title === "string" && typeof item.url === "string" && safeHttpsUrl(item.url));
+    const validGroups = groups.every(group => group && typeof group.id === "string" && typeof group.name === "string" && Array.isArray(group.roles));
+    const validRoutines = routines.every(routine => routine && typeof routine.id === "string" && typeof routine.name === "string" && Array.isArray(routine.blocks));
+    if (!validMedia || !validGroups || !validRoutines) throw new Error("Záloha obsahuje neplatný odkaz, skupinu nebo osnovu sestavy.");
+    return { plans: data.plans, customCards: data.customCards, mediaItems, groups, routines };
   }
   function readBackup(file) {
     const reader = new FileReader();
@@ -192,7 +226,7 @@
         pendingImport = parseBackup(JSON.parse(String(reader.result)));
         const plans = pendingImport.plans.length;
         const customCards = pendingImport.customCards.length;
-        $("#import-summary").textContent = `Záloha obsahuje ${plans} ${plans === 1 ? "plán" : plans >= 2 && plans <= 4 ? "plány" : "plánů"} a ${customCards} ${customCards === 1 ? "vlastní kartu" : customCards >= 2 && customCards <= 4 ? "vlastní karty" : "vlastních karet"}. Nahradí aktuální plány a vlastní karty; výchozí knihovna zůstane zachovaná.`;
+        $("#import-summary").textContent = `Záloha obsahuje ${plans} plánů, ${customCards} vlastních karet, ${pendingImport.mediaItems.length} mediálních odkazů, ${pendingImport.groups.length} skupin a ${pendingImport.routines.length} osnov sestav. Nahradí aktuální plány a vlastní karty i ostatní uložená data; výchozí knihovna zůstane zachovaná.`;
         $("#import-data-dialog").showModal();
       } catch (error) {
         pendingImport = null;
@@ -296,6 +330,154 @@
     toast(existing ? "Vlastní karta byla upravena." : "Vlastní karta byla uložena.");
   }
 
+  function initCloudSync() {
+    const config = window.CHEER_SUPABASE_CONFIG || {};
+    if (!config.url && !config.publishableKey) return;
+    const panel = $("#cloud-sync-panel");
+    panel.hidden = false;
+    const loginForm = $("#cloud-login-form");
+    const sessionControls = $("#cloud-session-controls");
+    const status = $("#cloud-sync-status");
+    let client;
+    try {
+      client = new window.CheerSupabase.SupabaseSyncClient(config);
+    } catch (error) {
+      status.textContent = `Konfiguraci cloudu se nepodařilo načíst: ${error.message}`;
+      return;
+    }
+
+    let currentUser = null;
+    function setCloudUser(user) {
+      currentUser = user;
+      loginForm.hidden = Boolean(user);
+      sessionControls.hidden = !user;
+      $("#cloud-account-label").textContent = user ? `Přihlášený vlastník: ${user.email || "osobní účet"}` : "";
+    }
+    function cloudError(error) {
+      if (error?.code === "revision_conflict" || error?.status === 409) return "Data na serveru se mezitím změnila. Načti aktuální verzi a zkus znovu.";
+      if (error?.code === "23505") return "Záznam právě vytvořilo jiné zařízení. Načti cloudovou verzi a pokračuj z ní.";
+      if (error?.status === 401) return "Přihlášení vypršelo nebo nebylo přijato. Přihlas se znovu.";
+      if (error?.status === 403 || error?.status === 404 || error?.code === "42501") return "Server odmítl přístup. Zkontroluj databázovou migraci a pravidla RLS.";
+      return `Synchronizace se nepodařila: ${error?.message || "neznámá chyba"}`;
+    }
+    function localPayload() {
+      return { schemaVersion: 2, plans: state.plans, customCards: state.customCards, mediaItems: state.mediaItems, groups: state.groups, routines: state.routines };
+    }
+    async function readCloudState() {
+      const row = await client.readState();
+      if (!row) {
+        status.textContent = "V cloudu zatím nejsou uložená data. Můžeš nahrát svá místní data.";
+        return null;
+      }
+      status.textContent = `Cloudová verze ${row.revision} · změněno ${formatDate(row.updated_at?.slice(0, 10))}. Vyber načtení ze serveru nebo nahrání místních dat.`;
+      return row;
+    }
+    loginForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      const submit = loginForm.querySelector('[type="submit"]');
+      submit.disabled = true;
+      status.textContent = "Přihlašuji…";
+      try {
+        const user = await client.login($("#cloud-email").value, $("#cloud-password").value);
+        $("#cloud-password").value = "";
+        setCloudUser(user);
+        await readCloudState();
+      } catch (error) {
+        status.textContent = cloudError(error);
+      } finally {
+        submit.disabled = false;
+      }
+    });
+    $("#cloud-download").addEventListener("click", async () => {
+      const button = $("#cloud-download");
+      button.disabled = true;
+      status.textContent = "Načítám cloudovou verzi…";
+      try {
+        const row = await client.readState();
+        if (!row) {
+          status.textContent = "V cloudu zatím nejsou data. Místní data zůstala beze změny.";
+          return;
+        }
+        const imported = parseBackup({ app: "Cheer Coach AI", ...row.payload });
+        if ((state.plans.length || state.customCards.length || state.mediaItems.length || state.groups.length || state.routines.length) && !window.confirm(`Načíst cloudovou verzi ${row.revision}? Nahradí místní data.`)) {
+          status.textContent = "Načtení zrušeno. Místní data zůstala beze změny.";
+          return;
+        }
+        state.plans = imported.plans;
+        state.customCards = imported.customCards;
+        state.mediaItems = imported.mediaItems;
+        state.groups = imported.groups;
+        state.routines = imported.routines;
+        saveState();
+        cards = [...(window.CHEER_CARDS || []), ...state.customCards];
+        renderPlans();
+        renderLibrary();
+        renderMedia();
+        renderGroups();
+        renderRoutines();
+        updateCounts();
+        status.textContent = `Načtena cloudová verze ${row.revision} · změněno ${formatDate(row.updated_at?.slice(0, 10))}.`;
+        toast("Cloudová data byla načtena.");
+      } catch (error) {
+        status.textContent = cloudError(error);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    $("#cloud-upload").addEventListener("click", async () => {
+      const button = $("#cloud-upload");
+      button.disabled = true;
+      status.textContent = "Ověřuji cloudovou verzi…";
+      try {
+        const row = await client.readState();
+        const payload = localPayload();
+        if (row && JSON.stringify(row.payload) === JSON.stringify(payload)) {
+          status.textContent = `Místní data už odpovídají cloudové verzi ${row.revision}.`;
+          return;
+        }
+        const warning = row
+          ? `Nahrát místní data jako novou verzi? Cloudová verze ${row.revision} z ${formatDate(row.updated_at?.slice(0, 10))} bude nahrazena.`
+          : "Nahrát všechna místní data do cloudu?";
+        if (!window.confirm(warning)) {
+          status.textContent = "Nahrání zrušeno. Cloudová data zůstala beze změny.";
+          return;
+        }
+        const saved = row ? await client.updateState(payload, row.revision) : await client.createState(payload);
+        status.textContent = `Místní data jsou uložená v cloudu jako verze ${saved.revision} · ${formatDate(saved.updated_at?.slice(0, 10))}.`;
+        toast("Data byla nahrána do cloudu.");
+      } catch (error) {
+        status.textContent = cloudError(error);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    $("#cloud-logout").addEventListener("click", async () => {
+      $("#cloud-logout").disabled = true;
+      try {
+        await client.logout();
+        setCloudUser(null);
+        status.textContent = "Odhlášeno. Místní data zůstala v tomto prohlížeči.";
+      } catch (error) {
+        setCloudUser(null);
+        status.textContent = `Odhlášeno z tohoto zařízení. ${cloudError(error)}`;
+      } finally {
+        $("#cloud-logout").disabled = false;
+      }
+    });
+    $("#storage-description").textContent = "Plány a vlastní karty zůstávají uložené místně. Pokud je synchronizace nastavená, můžeš je ručně stáhnout nebo nahrát do soukromého cloudového účtu.";
+    panel.hidden = false;
+    if (client.session) {
+      client.getUser().then(user => {
+        setCloudUser(user);
+        return readCloudState();
+      }).catch(error => {
+        client.clearSession();
+        setCloudUser(null);
+        status.textContent = cloudError(error);
+      });
+    }
+  }
+
   $("#today-label").textContent = new Intl.DateTimeFormat("cs-CZ", { weekday: "short", day: "numeric", month: "short", year: "numeric" }).format(new Date());
   $("#mobile-menu").addEventListener("click", () => $(".sidebar").classList.toggle("open"));
   $$(".nav-item").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
@@ -306,6 +488,35 @@
   $("#add-block").addEventListener("click", () => addBlockRow());
   $("#export-button").addEventListener("click", exportAll);
   $("#search-input").addEventListener("input", renderLibrary);
+  $("#media-filter").addEventListener("change", renderMedia);
+  $("#media-form").addEventListener("submit", event => {
+    event.preventDefault();
+    let url;
+    try { url = new URL($("#media-url").value.trim()); } catch { toast("Zadej platný HTTPS odkaz."); return; }
+    if (url.protocol !== "https:") { toast("Odkaz musí začínat https://."); return; }
+    state.mediaItems.push({ id: newId(), title: $("#media-title").value.trim(), url: url.href, area: $("#media-area").value, topic: $("#media-topic").value.trim(), note: $("#media-note").value.trim(), createdAt: new Date().toISOString() });
+    saveState(); renderMedia(); event.target.reset(); toast("Odkaz byl uložen.");
+  });
+  $("#group-form").addEventListener("submit", event => {
+    event.preventDefault();
+    state.groups.push({ id: newId(), name: $("#group-name").value.trim(), roles: splitLines($("#group-roles").value), note: $("#group-note").value.trim(), createdAt: new Date().toISOString() });
+    saveState(); renderGroups(); event.target.reset(); toast("Skupina byla uložena.");
+  });
+  $("#routine-form").addEventListener("submit", event => {
+    event.preventDefault();
+    const blocks = splitLines($("#routine-blocks").value);
+    if (!blocks.length) { toast("Přidej alespoň jeden blok sestavy."); return; }
+    state.routines.push({ id: newId(), name: $("#routine-name").value.trim(), goal: $("#routine-goal").value.trim(), blocks, groups: $("#routine-groups").value.trim(), createdAt: new Date().toISOString() });
+    saveState(); renderRoutines(); event.target.reset(); toast("Osnova sestavy byla uložena.");
+  });
+  document.addEventListener("click", event => {
+    const removeMedia = event.target.closest("[data-remove-media]");
+    const removeGroup = event.target.closest("[data-remove-group]");
+    const removeRoutine = event.target.closest("[data-remove-routine]");
+    if (removeMedia) { state.mediaItems = state.mediaItems.filter(item => item.id !== removeMedia.dataset.removeMedia); saveState(); renderMedia(); }
+    if (removeGroup) { state.groups = state.groups.filter(item => item.id !== removeGroup.dataset.removeGroup); saveState(); renderGroups(); }
+    if (removeRoutine) { state.routines = state.routines.filter(item => item.id !== removeRoutine.dataset.removeRoutine); saveState(); renderRoutines(); }
+  });
   $("#area-filter").addEventListener("change", renderLibrary);
   $("#level-filter").addEventListener("change", renderLibrary);
   $("#reset-filters").addEventListener("click", () => { $("#search-input").value = ""; $("#area-filter").value = "all"; $("#level-filter").value = "all"; renderLibrary(); });
@@ -388,6 +599,7 @@
     toast("Plán byl smazán.");
   });
   $("#settings-export").addEventListener("click", exportAll);
+  initCloudSync();
   $("#settings-import").addEventListener("change", event => {
     const file = event.target.files && event.target.files[0];
     if (file) readBackup(file);
@@ -396,11 +608,17 @@
     if (!pendingImport) return;
     state.plans = pendingImport.plans;
     state.customCards = pendingImport.customCards;
+    state.mediaItems = pendingImport.mediaItems;
+    state.groups = pendingImport.groups;
+    state.routines = pendingImport.routines;
     pendingImport = null;
     saveState();
     cards = [...(window.CHEER_CARDS || []), ...state.customCards];
     renderPlans();
     renderLibrary();
+    renderMedia();
+    renderGroups();
+    renderRoutines();
     updateCounts();
     $("#import-data-dialog").close();
     toast("Záloha byla načtena do tohoto prohlížeče.");
@@ -410,12 +628,18 @@
     localStorage.removeItem(KEY);
     state.plans = [];
     state.customCards = [];
+    state.mediaItems = [];
+    state.groups = [];
+    state.routines = [];
     cards = [...(window.CHEER_CARDS || [])];
     renderPlans();
     renderLibrary();
+    renderMedia();
+    renderGroups();
+    renderRoutines();
     updateCounts();
     $("#clear-data-dialog").close();
-    toast("Uložené plány a vlastní karty byly smazány.");
+    toast("Uložená uživatelská data byla smazána.");
   });
   $("#confirm-delete-card").addEventListener("click", () => {
     const id = $("#pending-card-delete").value;
