@@ -102,7 +102,9 @@ window.CHEER_CARDS = [
     safetyNote: "Přímý dohled trenéra je nutný. Nezkoušej nový prvek, odraz ani navázání další dovednosti bez osobního posouzení a odpovídajícího jištění.",
     sources: [
       { title: "ICU – Sport of Cheer Rules & Guidelines 2027, Novice standing/running tumbling", url: "https://cheerunion.org/wp-content/uploads/2026/09/icu_2027_rules_ch-pc.pdf", organization: "ICU", season: "2027", checked: "2026-10-18", note: "V dokumentu ICU je Novice označeno jako ekvivalent L1; v Novice jsou handstands povoleny. Týká se ICU, nikoli automaticky soutěží ČACH." },
-      { title: "ČACH – Věkové skupiny (příloha C), sezona 2026/2027", url: "https://pravidla.cach.cz/assets/pdfs/rules/cz/sr-cach-2026_2027-priloha-c-vekove-skupiny.pdf", organization: "ČACH", season: "2026/2027", checked: "2026-10-18", note: "Věkovou skupinu pro konkrétní soutěž ověř v příloze a kartě soutěže." }
+      { title: "ČACH – Věkové skupiny (příloha C), sezona 2026/2027", url: "https://pravidla.cach.cz/assets/pdfs/rules/cz/sr-cach-2026_2027-priloha-c-vekove-skupiny.pdf", organization: "ČACH", season: "2026/2027", checked: "2026-10-18", note: "Věkovou skupinu pro konkrétní soutěž ověř v příloze a kartě soutěže." },
+      { title: "Školící prezentace Akrobacie – Tumbling, snímky 33–34", url: "", organization: "Lokální zdroj", season: "Datum prezentace neuvedeno", checked: "2026-10-18", note: "Použito pro koučovací body aktivních ramen a tvaru těla; pravidla soutěže z prezentace nevyvozujeme." },
+      { title: "PF JU – Sportovní gymnastika: Stoj na rukou", url: "https://home.pf.jcu.cz/~base/index.php/akrobacie/stoj-na-rukou", organization: "Jihočeská univerzita", season: "Metodický zdroj", checked: "2026-10-18", note: "Metodický zdroj ke gymnastice; nejde o pravidla cheerleadingu." }
     ],
     rulesNote: "Ověřeno pouze vůči ICU 2027: Novice (ekvivalent L1 v dokumentu ICU) připouští handstand. ČACH, pořadatel, věková skupina a konkrétní soutěž mohou mít vlastní podmínky; aplikace legalitu nepotvrzuje.",
     updatedAt: "2026-10-18"
@@ -136,7 +138,9 @@ window.CHEER_CARDS = [
     safetyNote: "Přímý dohled trenéra je nutný. Plný akrobatický prvek nezkoušej bez osobního posouzení, vhodného povrchu a odpovídajícího jištění.",
     sources: [
       { title: "ICU – Sport of Cheer Rules & Guidelines 2027, Novice standing/running tumbling", url: "https://cheerunion.org/wp-content/uploads/2026/09/icu_2027_rules_ch-pc.pdf", organization: "ICU", season: "2027", checked: "2026-10-18", note: "Pravidla ICU Novice (ekvivalent L1 v tomto dokumentu) uvádějí cartwheels jako povolené. Nejde o potvrzení pro soutěže ČACH." },
-      { title: "ČACH – Otevírané divize, sezona 2026/2027", url: "https://pravidla.cach.cz/assets/pdfs/rules/cz/sr-cach-2026_2027-otevirane-divize.pdf", organization: "ČACH", season: "2026/2027", checked: "2026-10-18", note: "Seznam otevřených divizí a kategorií ověř pro konkrétní soutěž; pořadatel může vypsat speciální divize." }
+      { title: "ČACH – Otevírané divize, sezona 2026/2027", url: "https://pravidla.cach.cz/assets/pdfs/rules/cz/sr-cach-2026_2027-otevirane-divize.pdf", organization: "ČACH", season: "2026/2027", checked: "2026-10-18", note: "Seznam otevřených divizí a kategorií ověř pro konkrétní soutěž; pořadatel může vypsat speciální divize." },
+      { title: "Školící prezentace Akrobacie – Tumbling, snímky 15–18 a 40–41", url: "", organization: "Lokální zdroj", season: "Datum prezentace neuvedeno", checked: "2026-10-18", note: "Použito pro rotační a balanční přípravu a výběr předpokladů; prezentace neurčuje úroveň cheerleadingu." },
+      { title: "PF JU – Sportovní gymnastika: Přemet stranou", url: "https://home.pf.jcu.cz/~base/index.php/akrobacie/premet-stranou", organization: "Jihočeská univerzita", season: "Metodický zdroj", checked: "2026-10-18", note: "Metodický zdroj ke gymnastice; neověřuje legalitu pro soutěž cheerleadingu." }
     ],
     rulesNote: "ICU 2027 Novice připouští cartwheels a v dokumentu odpovídá L1. Konkrétní soutěž ČACH, věk, povrch a případné výjimky ověř v oficiálních dokumentech; aplikace legalitu nepotvrzuje.",
     updatedAt: "2026-10-18"
@@ -499,6 +503,186 @@ window.CHEER_CARDS = [
       { title: "ICU – Safety Rules & Age Grid", url: "https://cheerunion.org/education-schedule/rules-agegrid/", organization: "ICU", season: "2027", checked: "2026-10-18", note: "Oficiální rozcestník aktuálních pravidel a bezpečnostních dokumentů; ověř verzi platnou pro konkrétní soutěž." }
     ],
     rulesNote: "Bez soutěžní úrovně a bez tvrzení o legalitě. Pravidla soutěže a rozhodnutí o progresi vždy ověř a určuj odděleně.",
+    updatedAt: "2026-10-18"
+  },
+  {
+    id: "tumbling-forward-roll-prep",
+    title: "Kotoul vpřed – přípravná karta",
+    variant: "Příprava poloh a organizace; bez návodu na plný prvek nebo dopomoc",
+    discipline: "tumbling",
+    disciplineLabel: "Akrobacie",
+    levels: [],
+    levelLabel: "Přípravný obsah · bez úrovně",
+    status: "draft",
+    statusLabel: "Metodický podklad · ověřit trenérem",
+    use: "Pomůcka pro trenéra při přípravě bezpečného nácviku kotoulu vpřed. Karta nepovoluje pokus, nenahrazuje odborné vedení gymnastické akrobacie a neurčuje dopomoc.",
+    goal: "Rozdělit přípravu na známé výchozí a konečné polohy, kontrolu prostředí a individuální rozhodnutí trenéra. Plný kotoul ani převal přes hlavu tato karta nevede.",
+    roles: [
+      "Trenér nejprve ověří svou kvalifikaci, zkušenost s výukou kotoulů a klubový postup dopomoci.",
+      "Sportovec sdělí bolest, nejistotu nebo neochotu; nemusí prvek zkoušet.",
+      "Přímý dohled a případnou dopomoc zajišťuje pouze osoba, která je pro tuto konkrétní dovednost odborně připravená."
+    ],
+    prerequisites: [
+      "Odpovědný trenér rozhodl, že je vhodné kotoul zařadit, a umí bezpečně vést i ukončit zvolenou regresi.",
+      "Je k dispozici čistá, rovná gymnastická plocha a vhodná žíněnka; improvizované vyvýšení se nepoužívá.",
+      "Sportovec nemá bolest hlavy, krku, zad, zápěstí ani ramen a s účastí souhlasí.",
+      "Předem jsou domluvené povely stop a ukončení."
+    ],
+    equipment: "Pouze vhodná gymnastická podložka a vybavení zvolené trenérem. Karta nedoporučuje improvizované rampy ani seskoky z výšky.",
+    space: "Volná, suchá a rovná plocha s dostatečným odstupem od ostatních sportovců.",
+    progression: [
+      "Nejprve bez rotace zkontroluj pohodlný dřep a návrat do stoje.",
+      "Trenér může zvolit pouze takovou nízkou přípravu, jejíž techniku a bezpečné ukončení sám odborně ovládá.",
+      "Kolébka, nakloněná plocha i celý kotoul zůstávají mimo samostatný návod aplikace; jejich použití musí určit a vést odborně připravený trenér.",
+      "Karta nekončí doporučením k dalšímu prvku. O každém dalším kroku rozhoduje trenér nezávisle."
+    ],
+    drills: [
+      { title: "Výchozí a konečná poloha bez rotace", body: "Na pevné podložce si sportovec s trenérem pomalu vyzkouší stabilní dřep a návrat do stoje. Bez houpání, pádu, odrazu a opory o hlavu či krk. Regrese: pohodlný stoj." },
+      { title: "Kontrola prostoru a povelu stop", body: "Před pohybovým nácvikem sportovec ukáže volný prostor a zopakuje povel stop. Pokud je prostor obsazený nebo povel není jasný, blok nezačíná." },
+      { title: "Metodická kontrola trenéra", body: "Trenér předem projde zvolený postup, pomůcku, dohled a bezpečné ukončení s kvalifikovaným odborníkem. Pokud si není jistý technikou, kotoul se nezkouší." }
+    ],
+    readiness: [
+      "Sportovec se v přípravných polohách pohybuje bez bolesti a bez tlaku na hlavu či krk.",
+      "Trenér dokáže vysvětlit zvolenou regresi a bezpečně vést její ukončení.",
+      "Vhodnost plného kotoulu samostatně posoudil trenér; tato karta ji nepotvrzuje."
+    ],
+    coaching: [
+      "Používej jednu krátkou instrukci před pohybem; sportovce nerozptyluj během nejisté fáze.",
+      "Nepřenášej váhu na hlavu nebo krk. Při nejistotě se vrať k polohám na zemi bez rotace.",
+      "Neuč dopomoc pouze podle textu nebo obrázku; musí vycházet z odborného praktického zaškolení."
+    ],
+    stopCriteria: [
+      "Bolest, tlak nebo nepříjemný pocit v hlavě, krku, zádech, zápěstích či ramenou.",
+      "Strach, odmítnutí, ztráta rovnováhy, zmatek nebo neschopnost bezpečně ukončit zvolenou regresi.",
+      "Nevhodný povrch, překážka, únava zhoršující koordinaci nebo chybějící přímý dohled."
+    ],
+    regression: "Zůstaň u stabilního stoje nebo pohodlného dřepu bez rotace. Kotoul vynech, pokud trenér nemá odbornou jistotu nebo sportovec hlásí bolest či nejistotu.",
+    safeExit: "Všechny drily na této kartě končí ve stabilním stoji bez převalení. Pokud trenér zvolí jinou regresi, musí před začátkem určit její bezpečné ukončení; aplikace dopomoc ani záchranný postup nepředepisuje.",
+    safetyNote: "Přímý dohled odpovědného trenéra je nutný. Prezentace obsahuje technické pokyny k práci s hlavou a krkem; tento prototyp je nepřepisuje jako samostatný návod. Nezkoušej kotoul podle textové karty bez odborného vedení.",
+    sources: [
+      { title: "PF JU – Sportovní gymnastika: Kotoul vpřed", url: "https://home.pf.jcu.cz/~base/index.php/akrobacie/kotoul-vpred", organization: "Jihočeská univerzita", season: "Metodický zdroj", checked: "2026-10-18", note: "Odkazuje na kolébku, nakloněnou plochu a dopomoc; konkrétní volbu musí provést odborně připravený trenér." },
+      { title: "Školící prezentace Akrobacie – Tumbling, snímky 29–30", url: "", organization: "Lokální zdroj", season: "Datum prezentace neuvedeno", checked: "2026-10-18", note: "Použito pro výchozí polohy a seznam metodických témat; technika plného kotoulu ani dopomoci zde není v aplikaci reprodukována." }
+    ],
+    rulesNote: "Bez soutěžní úrovně a bez potvrzení legality. Obsah vychází z prezentace uložené v Source_materials a z metodického rozcestníku PF JU; ani jeden zdroj nenahrazuje kvalifikované osobní vedení ani aktuální pravidla konkrétní soutěže.",
+    updatedAt: "2026-10-18"
+  },
+  {
+    id: "tumbling-landing-prep",
+    title: "Doskok – příprava na pevné podložce",
+    variant: "Základní kontrola postoje a nízké, trenérem schválené varianty",
+    discipline: "tumbling",
+    disciplineLabel: "Akrobacie",
+    levels: [],
+    levelLabel: "Přípravný drill · bez úrovně",
+    status: "draft",
+    statusLabel: "Přípravný obsah · pravidla neověřena",
+    use: "Nízká pohybová příprava inspirovaná částí prezentace o doskoku. Nepředstavuje nácvik doskoku z akrobatického prvku ani kritérium připravenosti k němu.",
+    goal: "Trenér pozoruje, zda sportovec udrží kontrolovaný, bezbolestný postoj při jednoduché činnosti na podlaze. Nehodnotí se výška, výkon ani počet opakování.",
+    roles: [
+      "Trenér zvolí bezpečný, nízký pohyb a ukončí jej před únavou.",
+      "Sportovec může odmítnout, kdykoli zastavit a zvolit regresi.",
+      "Ostatní čekají mimo prostor drillu."
+    ],
+    prerequisites: [
+      "Vhodná pevná gymnastická podlaha nebo podložka a volný prostor.",
+      "Sportovec je bez bolesti a rozumí pokynu zastavit.",
+      "Přímý dohled trenéra; žádné zvýšené plochy, bedny ani odrazy do akrobatického prvku."
+    ],
+    equipment: "Rovná, suchá podlaha nebo vhodná gymnastická podložka. Nepoužívej zvýšené plochy ani nestabilní pomůcky.",
+    space: "Volná plocha s dostatečným odstupem od dalšího cvičícího.",
+    progression: [
+      "Začni stabilním postojem a pomalým pokrčením a napřímením bez odrazu.",
+      "Nízký obounožný poskok zařaď jen tehdy, když jej trenér osobně schválí; zakonči jej zastavením v bezpečné poloze.",
+      "Neprováděj seskoky z výšky, opakované skoky přes překážky ani navázání na přemet, rondát či salto.",
+      "Tato karta neurčuje, zda je sportovec připraven doskakovat z akrobatického prvku."
+    ],
+    drills: [
+      { title: "Pomalé pokrčení a návrat", body: "Z klidného stoje pomalu pokrč nohy jen v pohodlném rozsahu a vrať se do stoje. Trenér sleduje stabilitu bez bolesti. Regrese: zůstat ve stoji." },
+      { title: "Poskok a zastavení – jen po schválení trenérem", body: "Pouze nízký poskok snožmo na místě, bez překážek; po dopadu zůstaň v klidu. Trenér může cvičení vynechat nebo ukončit. Regrese: předchozí drill bez odrazu." }
+    ],
+    readiness: [
+      "Sportovec při nízké variantě udrží rovnováhu a bez bolesti zastaví.",
+      "Povrch a prostor jsou vhodné a trenér může pohyb přímo sledovat.",
+      "Splnění této karty není důkaz připravenosti na přemet, rondát ani salto."
+    ],
+    coaching: [
+      "Upřednostni tichý, kontrolovaný pohyb a pauzu před vyšším nebo opakovaným skokem.",
+      "Nepokračuj při bolesti, ztrátě rovnováhy nebo zhoršení kontroly.",
+      "Nekombinuj tento drill s rozběhem ani odrazem z vyvýšené plochy."
+    ],
+    stopCriteria: [
+      "Bolest nebo nejistota v kotnících, kolenou, kyčlích či zádech.",
+      "Ztráta rovnováhy, opakované kroky navíc, únava nebo neschopnost zastavit na povel.",
+      "Nevhodný povrch, překážka, nedostatek prostoru nebo nepřítomnost trenéra."
+    ],
+    regression: "Vynech poskoky a vrať se k pomalému pokrčení bez odrazu, případně pouze ke stabilnímu postoji. Při přetrvávající bolesti cvičení ukonči.",
+    safeExit: "Dril končí stabilním stojem na podlaze. Nejde o sestup z akrobatického prvku a neobsahuje záchrannou techniku.",
+    safetyNote: "Nízká příprava na podlaze nenahrazuje doskok z prvku. Z prezentace nebyly převzaty seskoky z výšky, odrazy na bednu ani skákání mezi nestabilními pomůckami.",
+    sources: [
+      { title: "Školící prezentace Akrobacie – Tumbling, snímky 7–10", url: "", organization: "Lokální zdroj", season: "Datum prezentace neuvedeno", checked: "2026-10-18", note: "Zdrojová témata: odrazová a doskoková příprava. Aplikace záměrně přebírá jen nízkou variantu na podlaze." },
+      { title: "ICU – Sport of Cheer Rules & Guidelines 2027, obecná bezpečnost", url: "https://cheerunion.org/wp-content/uploads/2026/09/icu_2027_rules_ch-pc.pdf", organization: "ICU", season: "2027", checked: "2026-10-18", note: "Obecné zásady pro kvalifikovaný dohled a bezpečné prostředí; tento zdroj neověřuje legalitu konkrétního drillu v soutěžích ČACH." }
+    ],
+    rulesNote: "Přípravný obsah bez úrovně a bez pravidlového tvrzení. Karta se vztahuje jen k jednoduchému pohybu na pevné podlaze, ne k akrobatickému doskoku.",
+    updatedAt: "2026-10-18"
+  },
+  {
+    id: "tumbling-roundoff-coach-review",
+    title: "Rondát – trenérská kontrola před zařazením",
+    variant: "Přehled předpokladů a podmínek; karta nevede k provedení rondátu",
+    discipline: "tumbling",
+    disciplineLabel: "Akrobacie",
+    levels: [],
+    levelLabel: "Odborné posouzení · bez úrovně",
+    status: "draft",
+    statusLabel: "Odborně ověřit před použitím",
+    use: "Referenční karta pro plánování trenéra. Rondát je přechodový akrobatický prvek; tato karta neobsahuje návod k jeho provedení ani nepovoluje navazovat další prvek.",
+    goal: "Před případným zařazením ověřit předpoklady, kvalifikaci osoby vedoucí nácvik, povrch, prostor, dohled a postup bezpečného ukončení.",
+    roles: [
+      "Odpovědný trenér rozhoduje, zda má potřebnou kvalifikaci a zkušenost k vedení tohoto prvku.",
+      "Sportovec nesmí být pod tlakem k pokusu; může nácvik kdykoli odmítnout.",
+      "Spotting a krizový postup určuje pouze osoba prakticky připravená pro tuto dovednost."
+    ],
+    prerequisites: [
+      "Trenér samostatně posoudil zkušenost s přemetem stranou a stojem na rukou; aplikace je nepovažuje za automatické potvrzení připravenosti.",
+      "Je k dispozici vhodný gymnastický povrch, volný prostor a přímý odborný dohled.",
+      "Před tréninkem byla zvlášť ověřena soutěž, sezona, věková skupina a pravidla pro konkrétní provedení.",
+      "Je známý bezpečný způsob ukončení a počet i role potřebných spotterů."
+    ],
+    equipment: "Pomůcky a povrch musí vybrat trenér, který je odborně připraven tuto dovednost vést. Karta nedoporučuje domácí rampy, bedny ani improvizované vyvýšení.",
+    space: "Pouze vyhrazená, volná gymnastická dráha pod přímým dohledem; mimo ni se prvek nezkouší.",
+    progression: [
+      "Školící prezentace uvádí stoj na rukou a přemet stranou jako předpoklady. Trenér musí každou dovednost posoudit samostatně.",
+      "Prezentace zmiňuje postavení rukou, půlobrat a korbet jako metodická témata; tato karta z nich nedělá samostatné pokyny k provedení.",
+      "K rondátu nepřipojuj flik, salto ani jiný prvek na základě této karty.",
+      "Pokud trenér nemá aktuální praktické zaškolení, zařazení rondátu odlož a vyhledej kvalifikovaného specialistu."
+    ],
+    drills: [
+      { title: "Kontrola předpokladů bez pokusu", body: "Trenér sepíše, které již známé dovednosti považuje za předpoklad, jak je osobně ověřil a kdo má kvalifikaci vést další fázi. Žádné provedení rondátu." },
+      { title: "Kontrola dráhy a povelů", body: "Projděte v chůzi pracovní zónu, čekací místa, povel stop a odpovědnost dospělých. Pokud se členové míjejí nebo není jasný plán, trénink prvku se neotevře." }
+    ],
+    readiness: [
+      "Odborně připravený trenér osobně posoudil předpoklady sportovce a podmínky tréninku.",
+      "Je zajištěný volný prostor, vhodný povrch, přímý dohled a předem určený bezpečný postup.",
+      "Pravidla konkrétní soutěže, věkové skupiny a sezony byla ověřena samostatně."
+    ],
+    coaching: [
+      "Nepoužívej počet úspěšných pokusů jako automatické kritérium k postupu.",
+      "Neuč dopomoc z textu nebo obrázku; musí vycházet z praktického zaškolení.",
+      "Nácvik probíhá pouze v rozsahu, který odpovědný trenér bezpečně ovládá."
+    ],
+    stopCriteria: [
+      "Bolest, strach, odmítnutí, ztráta kontroly nebo nejisté ukončení pohybu.",
+      "Chybějící kvalifikovaný dohled, spotter, vhodný povrch nebo volná dráha.",
+      "Neověřená soutěžní pravidla nebo snaha navázat další prvek bez samostatného posouzení."
+    ],
+    regression: "Vynech rondát a vrať se k trenérem vybrané, již zvládnuté regresi na zemi, například k obecným drilům postoje a opory. Pokud trenér nemůže bezpečně určit regresi, vyhledej odbornou konzultaci.",
+    safeExit: "Tato karta neobsahuje fyzický nácvik rondátu ani sestup. Před jakýmkoli pohybovým blokem určí odborně připravený trenér bezpečný konec; při nejistotě se prvek nezkouší.",
+    safetyNote: "Rondát může připravovat na další akrobatické prvky, ale tato karta žádnou návaznost nedoporučuje. Přímý dohled odborně připraveného trenéra je nezbytný; legalita se vždy ověřuje pro konkrétní soutěž, věkovou skupinu a sezonu.",
+    sources: [
+      { title: "PF JU – Sportovní gymnastika: Rondát", url: "https://home.pf.jcu.cz/~base/index.php/akrobacie/rondat", organization: "Jihočeská univerzita", season: "Metodický zdroj", checked: "2026-10-18", note: "Stránka uvádí průpravná témata včetně půlobratu a korbetu; karta je nepřepisuje jako návod pro samostatný nácvik." },
+      { title: "Školící prezentace Akrobacie – Tumbling, snímky 40–44 a 48–51", url: "", organization: "Lokální zdroj", season: "Datum prezentace neuvedeno", checked: "2026-10-18", note: "Slouží k identifikaci rondátu a jeho návazností; flik a salta jsou v této verzi záměrně pouze uvedeny v odborné revizi, ne jako výukové karty." }
+    ],
+    rulesNote: "Bez úrovně a bez potvrzení legality. Zdrojem technických témat je lokální školící prezentace a metodické stránky PF JU pro sportovní gymnastiku; pravidla cheerleadingu je třeba ověřit samostatně.",
     updatedAt: "2026-10-18"
   }
 ];
