@@ -1,10 +1,10 @@
 # Cheer Coach AI
 
-Responzivní webová aplikace v češtině pro osobní plánování cheerleadingového tréninku. Obsahuje knihovnu trenérských karet, vyhledávání a filtry, detail karet, plánovač a export/import JSON záloh.
+Responzivní webová aplikace v češtině pro osobní plánování cheerleadingového tréninku. Obsahuje knihovnu trenérských karet, seznam videoodkazů, evidenci stunt groups, osnovu sestav, plánovač a export/import JSON záloh.
 
 ## Použití
 
-Otevři web v Safari na iPadu. Pro ikonu na ploše klepni na **Sdílet → Přidat na plochu**. Plány a vlastní karty se ukládají pouze lokálně v prohlížeči; automatická synchronizace mezi zařízeními není dostupná.
+Otevři web v Safari na iPadu. Pro ikonu na ploše klepni na **Sdílet → Přidat na plochu**. Plány, vlastní karty, odkazy, skupiny a sestavy se ukládají pouze lokálně v prohlížeči; automatická synchronizace mezi zařízeními není dostupná.
 
 ## Bezpečnost
 
