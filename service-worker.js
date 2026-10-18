@@ -1,12 +1,12 @@
-const CACHE_NAME = "cheer-coach-ai-shell-v18";
+const CACHE_NAME = "cheer-coach-ai-shell-v19";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=instagram-mobile-preview-v2-20261018",
+  "./styles.css?v=instagram-embed-natural-height-v3-20261018",
   "./cards.js?v=cards-20261018-roundtrip-cards",
   "./sync-config.js?v=sync-config-empty-1",
   "./supabase-client.js?v=supabase-rest-client-1",
-  "./app.js?v=instagram-mobile-preview-v2-20261018",
+  "./app.js?v=instagram-embed-natural-height-v3-20261018",
   "./manifest.webmanifest",
   "./assets/icon.svg"
 ];
