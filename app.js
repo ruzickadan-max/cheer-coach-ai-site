@@ -78,8 +78,9 @@
     });
     $("#library-grid").innerHTML = found.length ? found.map(card => `
       <article class="card-tile" data-open-card="${escapeHtml(card.id)}" tabindex="0" role="button" aria-label="Otevřít kartu ${escapeHtml(card.title)}">
-        <div class="tile-art"><span class="tile-level">${escapeHtml(card.levelLabel || card.levels.join(" · "))}</span><div class="tile-name">${escapeHtml(card.title.toUpperCase())}</div><span class="tile-tag">${escapeHtml(card.disciplineLabel.toUpperCase())}</span></div>
-        <div class="tile-body"><div class="tile-meta"><span class="area-pill">${escapeHtml(card.disciplineLabel)}</span><span class="verify-pill"><span></span>${escapeHtml(card.statusLabel)}</span></div><h3>${escapeHtml(card.title)}</h3><p>${escapeHtml(card.variant)}</p><div class="tile-foot"><span>ÚROVEŇ / RÁMEC</span><strong>${escapeHtml(card.levelLabel || card.levels.join(" / "))}</strong></div></div>
+        <div class="skill-card-meta"><span class="area-pill">${escapeHtml(card.disciplineLabel)}</span><span class="verify-pill"><span></span>${escapeHtml(card.statusLabel)}</span></div>
+        <h3>${escapeHtml(card.title)}</h3><p>${escapeHtml(card.variant)}</p>
+        <div class="skill-card-bottom"><span>RÁMEC</span><strong>${escapeHtml(card.levelLabel || card.levels.join(" · ") || "Úroveň ověřit")}</strong><span class="skill-card-arrow" aria-hidden="true">→</span></div>
       </article>`).join("") : `<div class="no-results">Žádná karta neodpovídá hledání.<br><button class="text-button" id="empty-reset">Vymazat filtry</button></div>`;
   }
   function listMarkup(items, ordered = false) {
