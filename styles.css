@@ -49,7 +49,7 @@
 .card-modal{position:fixed;inset:0;margin:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;border-radius:0;overflow:hidden}
 .card-modal::backdrop{background:#1118;backdrop-filter:blur(5px)}.card-dialog-content{height:100%;max-height:none;overflow-y:auto;overscroll-behavior:contain;padding:0 24px 36px;scrollbar-gutter:stable}
 .detail-head{position:sticky;top:0;z-index:3;max-width:1100px;margin:0 auto;padding:18px 0 15px;background:var(--paper);box-shadow:0 9px 14px -14px #0008}
-.detail-head h2{font-size:clamp(24px,4vw,36px)}.detail-status,.detail-grid{max-width:1100px;margin-left:auto;margin-right:auto}.detail-status{margin-top:18px;margin-bottom:14px;padding:13px 16px;font-size:12px}.detail-grid{gap:13px}.detail-section{padding:17px;border-radius:9px}.detail-section h3{font-size:15px}.detail-section p,.detail-section li{font-size:12px;line-height:1.7}.detail-sources a{font-size:12px}
+.detail-head h2{font-size:clamp(24px,4vw,36px)}.detail-status,.detail-grid{max-width:1100px;margin-left:auto;margin-right:auto}.detail-status{margin-top:18px;margin-bottom:14px;padding:13px 16px;font-size:12px}.detail-grid{gap:13px}.detail-section{padding:17px;border-radius:9px}.detail-section h3{font-size:15px}.detail-section p,.detail-section li{font-size:12px;line-height:1.7}.detail-sources a,.detail-sources .detail-source-text{display:block;margin:8px 0;font-size:12px;line-height:1.6}.detail-sources .detail-source-text{color:#55594f}.detail-sources .detail-source-text small{display:block;color:var(--muted);font-size:10px}
 
 /* Navigace jako mobilní aplikace na telefonu a iPadu v portrétu */
 .mobile-tabbar{display:none}
