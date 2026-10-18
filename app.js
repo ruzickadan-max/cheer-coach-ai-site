@@ -107,8 +107,8 @@
       if (id) { embed = `https://www.tiktok.com/player/v1/${id}?controls=1`; platform = "TikTok"; }
     } else if (["facebook.com", "m.facebook.com", "fb.watch"].includes(host)) {
       const path = parsed.pathname.toLowerCase();
-      const hasVideo = host === "fb.watch" || /\\/(?:videos?|reel|reels|watch|share\\/(?:r|v))(?:\\/|$)/.test(path) || path === "/video.php" || parsed.searchParams.has("v");
-      if (hasVideo || /\\/posts?\\/|\\/permalink\\.php|\\/share\\/p\\//.test(path)) {
+      const hasVideo = host === "fb.watch" || /\/(?:videos?|reel|reels|watch|share\/(?:r|v))(?:\/|$)/.test(path) || path === "/video.php" || parsed.searchParams.has("v");
+      if (hasVideo || /\/posts?\/|\/permalink\.php|\/share\/p\//.test(path)) {
         const permalink = new URL(url);
         if (permalink.hostname === "m.facebook.com") permalink.hostname = "www.facebook.com";
         const endpoint = hasVideo ? "video" : "post";
