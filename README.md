@@ -19,4 +19,4 @@ Jde o statickou aplikaci bez závislostí, backendu a API klíčů. GitHub Actio
 
 ## Přehrávání a práce na telefonu
 
-Videa z YouTube, Vimeo, TikToku a Instagramu nebo přímé video soubory lze přehrát přímo v aplikaci, pokud zdroj dovolí vložení. Odkaz můžeš propojit s kartou i konkrétním drilem. Detail karty se otevírá přes celou obrazovku a mobilní navigace je přizpůsobená dotykovému ovládání. Externí obsah aplikace nestahuje; dostupnost přehrávání určuje zdrojová platforma.
+Videa z YouTube, Vimeo, TikToku a Instagramu nebo přímé video soubory lze přehrát přímo v aplikaci, pokud zdroj dovolí vložení. Odkaz můžeš propojit s kartou i konkrétním drilem. Na iPadu se detail otevře vedle levého menu, na telefonu přes celou obrazovku; mobilní navigace je přizpůsobená dotykovému ovládání. Externí obsah aplikace nestahuje; dostupnost přehrávání určuje zdrojová platforma.
