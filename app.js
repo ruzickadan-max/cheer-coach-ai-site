@@ -190,7 +190,7 @@
   function exportAll() {
     download(`cheer-coach-ai-data-${todayIso()}.json`, {
       app: "Cheer Coach AI",
-      schemaVersion: 1,
+      schemaVersion: 2,
       exportedAt: new Date().toISOString(),
       plans: state.plans,
       cards,
