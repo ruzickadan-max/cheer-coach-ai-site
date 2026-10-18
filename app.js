@@ -50,11 +50,14 @@
     if (settingsCount) settingsCount.textContent = state.plans.length;
     const customCount = $("#settings-card-count");
     if (customCount) customCount.textContent = state.customCards.length;
+    const groupsCount = $("#stat-groups");
+    if (groupsCount) groupsCount.textContent = state.groups.length;
   }
   function showView(name) {
     $$(".view").forEach(view => view.classList.toggle("active", view.id === `view-${name}`));
     $$(".nav-item").forEach(button => button.classList.toggle("active", button.dataset.view === name));
-    const labels = { home: "Přehled", library: "Prvky a drily", media: "Videa a odkazy", groups: "Stunt groups", planner: "Tréninky", routines: "Sestavy", rules: "Pravidla & zdroje", settings: "Nastavení" };
+    $$(".mobile-tabbar [data-view]").forEach(button => button.classList.toggle("active", button.dataset.view === name));
+    const labels = { home: "Přehled", library: "Prvky a drily", media: "Videa a odkazy", groups: "Skupiny stuntu", planner: "Tréninky", routines: "Tvorba sestavy", rules: "Pravidla & zdroje", settings: "Nastavení" };
     $("#crumb-current").textContent = labels[name] || labels.home;
     $(".sidebar").classList.remove("open");
     if (name === "planner") renderPlans();
@@ -83,6 +86,38 @@
     const tag = ordered ? "ol" : "ul";
     return `<${tag}>${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</${tag}>`;
   }
+  function mediaPreviewMarkup(item, compact = false) {
+    const url = safeHttpsUrl(item.url);
+    if (!url) return "";
+    let parsed;
+    try { parsed = new URL(url); } catch { return ""; }
+    const host = parsed.hostname.toLowerCase().replace(/^www\./, "");
+    let embed = "";
+    let platform = "";
+    let video = false;
+    if (host === "youtu.be" || ["youtube.com", "m.youtube.com", "youtube-nocookie.com"].includes(host)) {
+      const id = host === "youtu.be" ? parsed.pathname.split("/").filter(Boolean)[0] : parsed.searchParams.get("v") || parsed.pathname.match(/\/(?:shorts|embed|live)\/([^/?]+)/)?.[1];
+      if (id && /^[\w-]{11}$/.test(id)) { embed = `https://www.youtube-nocookie.com/embed/${id}`; platform = "YouTube"; }
+    } else if (["vimeo.com", "player.vimeo.com"].includes(host)) {
+      const id = parsed.pathname.match(/\/(?:video\/)?(\d+)/)?.[1];
+      if (id) { embed = `https://player.vimeo.com/video/${id}`; platform = "Vimeo"; }
+    } else if (["tiktok.com", "m.tiktok.com"].includes(host)) {
+      const id = parsed.pathname.match(/\/video\/(\d+)/)?.[1];
+      if (id) { embed = `https://www.tiktok.com/player/v1/${id}?controls=1`; platform = "TikTok"; }
+    } else if (["instagram.com", "m.instagram.com"].includes(host)) {
+      const match = parsed.pathname.match(/\/(?:p|reel|reels|tv)\/([\w-]+)/);
+      if (match) { embed = `https://www.instagram.com/${parsed.pathname.split("/").filter(Boolean).slice(0, 2).join("/")}/embed/`; platform = "Instagram"; }
+    }
+    if (!embed && /\.(mp4|webm|mov|m4v)(?:$|\?)/i.test(`${parsed.pathname}${parsed.search}`)) video = true;
+    if (embed) return `<div class="media-preview${compact ? " compact" : ""}"><iframe src="${escapeHtml(embed)}" title="Náhled: ${escapeHtml(item.title)} (${platform})" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+    if (video) return `<div class="media-preview${compact ? " compact" : ""}"><video controls playsinline preload="metadata" aria-label="Přehrát: ${escapeHtml(item.title)}"><source src="${escapeHtml(url)}">Přehrávání tohoto formátu tento prohlížeč nepodporuje.</video></div>`;
+    return `<a class="media-preview-fallback" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"><span>↗</span><strong>Náhled není pro tento zdroj dostupný</strong><small>Otevřít na původním webu</small></a>`;
+  }
+  function cardMediaMarkup(card, drillIndex = null) {
+    const linked = state.mediaItems.filter(item => item.cardId === card.id && (drillIndex === null ? item.drillIndex === null || item.drillIndex === undefined || item.drillIndex === "" : Number(item.drillIndex) === drillIndex));
+    if (!linked.length) return "";
+    return `<div class="linked-media-list">${linked.map(item => `<article class="linked-media"><h4>${escapeHtml(item.title)}</h4>${mediaPreviewMarkup(item, true)}${item.note ? `<p>${escapeHtml(item.note)}</p>` : ""}<a href="${escapeHtml(safeHttpsUrl(item.url))}" target="_blank" rel="noopener noreferrer">Otevřít původní zdroj ↗</a></article>`).join("")}</div>`;
+  }
   function openCard(id) {
     const card = cards.find(item => item.id === id);
     if (!card) return;
@@ -97,7 +132,8 @@
         <section class="detail-section"><h3>Prostor</h3><p>${escapeHtml(card.space)}</p></section>
         <section class="detail-section"><h3>Vybavení</h3><p>${escapeHtml(card.equipment)}</p></section>
         <section class="detail-section full"><h3>Progrese</h3>${listMarkup(card.progression, true)}<p>${escapeHtml(card.safetyNote)}</p></section>
-        <section class="detail-section full"><h3>Drily</h3>${card.drills.map(drill => `<p><strong>${escapeHtml(drill.title)}.</strong> ${escapeHtml(drill.body)}</p>`).join("")}</section>
+        ${card.drills.map((drill, index) => `<section class="detail-section full drill-detail"><h3>${escapeHtml(drill.title)}</h3><p>${escapeHtml(drill.body)}</p>${cardMediaMarkup(card, index)}</section>`).join("")}
+        ${cardMediaMarkup(card) ? `<section class="detail-section full"><h3>Videa k prvku</h3>${cardMediaMarkup(card)}</section>` : ""}
         <section class="detail-section"><h3>Kritéria připravenosti</h3>${listMarkup(card.readiness)}</section>
         <section class="detail-section"><h3>Koučovací body</h3>${listMarkup(card.coaching)}</section>
         <section class="detail-section danger full"><h3>Stop-kritéria · zastav při</h3>${listMarkup(card.stopCriteria)}</section>
@@ -130,15 +166,26 @@
       const month = new Intl.DateTimeFormat("cs-CZ", { month: "short" }).format(date).replace(".", "");
       const count = (plan.blocks || []).length;
       const blockWord = count === 1 ? "blok" : count >= 2 && count <= 4 ? "bloky" : "bloků";
-      return `<div class="upcoming-item"><div class="date-box"><b>${escapeHtml(day)}</b><small>${escapeHtml(month)}</small></div><div><strong>${escapeHtml(plan.name)}</strong><small>${escapeHtml(planDuration(plan))} min · ${count} ${blockWord}</small></div><span class="item-arrow">→</span></div>`;
+      return `<button type="button" class="upcoming-item" data-edit-upcoming="${escapeHtml(plan.id)}" aria-label="Otevřít a upravit plán ${escapeHtml(plan.name)}"><span class="date-box"><b>${escapeHtml(day)}</b><small>${escapeHtml(month)}</small></span><span class="upcoming-copy"><strong>${escapeHtml(plan.name)}</strong><small>${escapeHtml(planDuration(plan))} min · ${count} ${blockWord}</small></span><span class="item-arrow">→</span></button>`;
     }).join("") : `<div class="empty-state"><div><div class="empty-symbol">✳</div>Zatím nemáš uložený žádný nadcházející trénink.<br>Vytvoř plán a přidej první blok.</div></div>`;
     updateCounts();
   }
   function renderMedia() {
+    populateMediaCardOptions();
     const filter = $("#media-filter").value;
     const items = [...state.mediaItems].filter(item => safeHttpsUrl(item.url) && (filter === "all" || item.area === filter)).sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
     $("#media-count").textContent = state.mediaItems.length;
-    $("#media-list").innerHTML = items.length ? items.map(item => { const url = safeHttpsUrl(item.url); return `<article class="workspace-card"><div class="workspace-card-top"><span class="area-pill">${item.area === "stunt" ? "Group stunt" : "Akrobacie"}</span><button class="plan-action" data-remove-media="${escapeHtml(item.id)}" aria-label="Odebrat odkaz">×</button></div><h3>${escapeHtml(item.title)}</h3><p class="workspace-meta">${escapeHtml(item.topic || "Bez přiřazeného tématu")} · přidáno ${escapeHtml(formatDate((item.createdAt || "").slice(0, 10)))}</p>${item.note ? `<p>${escapeHtml(item.note)}</p>` : ""}<a class="workspace-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Otevřít zdroj ↗<small>${escapeHtml(url)}</small></a></article>`; }).join("") : `<div class="empty-state"><div><div class="empty-symbol">▷</div>Zatím tu nejsou uložené žádné odkazy.<br>Přidej první materiál ze zdroje, který smíš používat.</div></div>`;
+    $("#media-list").innerHTML = items.length ? items.map(item => { const url = safeHttpsUrl(item.url); const linkedCard = cards.find(card => card.id === item.cardId); const drill = linkedCard && item.drillIndex !== null && item.drillIndex !== undefined && item.drillIndex !== "" ? linkedCard.drills?.[Number(item.drillIndex)] : null; return `<article class="workspace-card media-card"><div class="workspace-card-top"><span class="area-pill">${item.area === "stunt" ? "Group stunt" : "Akrobacie"}</span><button class="plan-action" data-remove-media="${escapeHtml(item.id)}" aria-label="Odebrat odkaz">×</button></div>${mediaPreviewMarkup(item)}<h3>${escapeHtml(item.title)}</h3><p class="workspace-meta">${escapeHtml(linkedCard ? `${linkedCard.title}${drill ? ` · ${drill.title}` : ""}` : item.topic || "Bez přiřazeného prvku")} · přidáno ${escapeHtml(formatDate((item.createdAt || "").slice(0, 10)))}</p>${item.note ? `<p>${escapeHtml(item.note)}</p>` : ""}<a class="workspace-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Otevřít zdroj ↗<small>${escapeHtml(url)}</small></a></article>`; }).join("") : `<div class="empty-state"><div><div class="empty-symbol">▷</div>Zatím tu nejsou uložené žádné odkazy.<br>Přidej první materiál ze zdroje, který smíš používat.</div></div>`;
+  }
+  function populateMediaCardOptions(selected = "") {
+    const select = $("#media-card");
+    const drillSelect = $("#media-drill");
+    if (!select || !drillSelect) return;
+    select.innerHTML = `<option value="">Bez přiřazení</option>${cards.map(card => `<option value="${escapeHtml(card.id)}">${escapeHtml(card.title)}</option>`).join("")}`;
+    select.value = selected;
+    const card = cards.find(item => item.id === selected);
+    drillSelect.innerHTML = card ? `<option value="">Celý prvek / bez konkrétního drilu</option>${(card.drills || []).map((drill, index) => `<option value="${index}">${escapeHtml(drill.title)}</option>`).join("")}` : `<option value="">Nejprve vyber prvek</option>`;
+    drillSelect.disabled = !card;
   }
   function renderGroups() {
     $("#group-count").textContent = state.groups.length;
@@ -480,8 +527,19 @@
 
   $("#today-label").textContent = new Intl.DateTimeFormat("cs-CZ", { weekday: "short", day: "numeric", month: "short", year: "numeric" }).format(new Date());
   $("#mobile-menu").addEventListener("click", () => $(".sidebar").classList.toggle("open"));
+  $("#mobile-more").addEventListener("click", () => $(".sidebar").classList.toggle("open"));
+  const savedTheme = localStorage.getItem("cheer-coach-ai.theme");
+  if (savedTheme !== "light") document.body.classList.add("theme-dark");
+  $("#theme-toggle").addEventListener("click", () => {
+    const dark = document.body.classList.toggle("theme-dark");
+    localStorage.setItem("cheer-coach-ai.theme", dark ? "dark" : "light");
+  });
   $$(".nav-item").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
-  $$('[data-goto="planner"]').forEach(button => button.addEventListener("click", () => showView("planner")));
+  $$(".mobile-tabbar [data-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
+  $$('[data-goto]').forEach(button => button.addEventListener("click", () => showView(button.dataset.goto)));
+  $$('[data-goto]').forEach(button => button.addEventListener("keydown", event => {
+    if ((event.key === "Enter" || event.key === " ") && button.getAttribute("role") === "link") { event.preventDefault(); showView(button.dataset.goto); }
+  }));
   $("#new-plan").addEventListener("click", () => openPlanDialog());
   $("#new-plan-home").addEventListener("click", () => openPlanDialog());
   $("#new-plan-small").addEventListener("click", () => openPlanDialog());
@@ -489,12 +547,15 @@
   $("#export-button").addEventListener("click", exportAll);
   $("#search-input").addEventListener("input", renderLibrary);
   $("#media-filter").addEventListener("change", renderMedia);
+  $("#media-card").addEventListener("change", event => populateMediaCardOptions(event.target.value));
   $("#media-form").addEventListener("submit", event => {
     event.preventDefault();
     let url;
     try { url = new URL($("#media-url").value.trim()); } catch { toast("Zadej platný HTTPS odkaz."); return; }
     if (url.protocol !== "https:") { toast("Odkaz musí začínat https://."); return; }
-    state.mediaItems.push({ id: newId(), title: $("#media-title").value.trim(), url: url.href, area: $("#media-area").value, topic: $("#media-topic").value.trim(), note: $("#media-note").value.trim(), createdAt: new Date().toISOString() });
+    const cardId = $("#media-card").value;
+    const drillValue = $("#media-drill").value;
+    state.mediaItems.push({ id: newId(), title: $("#media-title").value.trim(), url: url.href, area: $("#media-area").value, topic: $("#media-topic").value.trim(), cardId: cardId || null, drillIndex: cardId && drillValue !== "" ? Number(drillValue) : null, note: $("#media-note").value.trim(), createdAt: new Date().toISOString() });
     saveState(); renderMedia(); event.target.reset(); toast("Odkaz byl uložen.");
   });
   $("#group-form").addEventListener("submit", event => {
@@ -510,6 +571,11 @@
     saveState(); renderRoutines(); event.target.reset(); toast("Osnova sestavy byla uložena.");
   });
   document.addEventListener("click", event => {
+    const upcoming = event.target.closest("[data-edit-upcoming]");
+    if (upcoming) {
+      const plan = state.plans.find(item => item.id === upcoming.dataset.editUpcoming);
+      if (plan) { showView("planner"); openPlanDialog(plan); }
+    }
     const removeMedia = event.target.closest("[data-remove-media]");
     const removeGroup = event.target.closest("[data-remove-group]");
     const removeRoutine = event.target.closest("[data-remove-routine]");
@@ -614,6 +680,7 @@
     pendingImport = null;
     saveState();
     cards = [...(window.CHEER_CARDS || []), ...state.customCards];
+    populateMediaCardOptions();
     renderPlans();
     renderLibrary();
     renderMedia();
@@ -657,6 +724,7 @@
   });
 
   renderLibrary();
+  populateMediaCardOptions();
   renderPlans();
   updateCounts();
 
