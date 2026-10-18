@@ -35,6 +35,7 @@
 
 /* Přehrávání a propojení mediálních referencí s kartami */
 .media-preview{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#161817;border-radius:8px;margin:12px 0;color:#fff}
+.media-preview.facebook-preview{aspect-ratio:16/10;min-height:240px}
 .media-preview iframe,.media-preview video{display:block;width:100%;height:100%;border:0;object-fit:contain;background:#111}
 .media-preview-fallback{display:flex;min-height:110px;align-items:center;justify-content:center;flex-direction:column;gap:7px;margin:12px 0;padding:18px;border:1px dashed var(--line);border-radius:8px;color:var(--ink);text-align:center;text-decoration:none;background:color-mix(in srgb,var(--paper) 70%,#fff)}
 .media-preview-fallback span{font-size:24px;color:#929d62}.media-preview-fallback strong{font-size:12px}.media-preview-fallback small{font-size:10px;color:var(--muted)}
