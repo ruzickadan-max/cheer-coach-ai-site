@@ -1,4 +1,4 @@
-const CACHE_NAME = "cheer-coach-ai-shell-v9";
+const CACHE_NAME = "cheer-coach-ai-shell-v10";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,7 +6,7 @@ const APP_SHELL = [
   "./cards.js?v=cards-20261018-roundtrip-cards",
   "./sync-config.js?v=sync-config-empty-1",
   "./supabase-client.js?v=supabase-rest-client-1",
-  "./app.js?v=media-groups-routines-1",
+  "./app.js?v=embedded-media-fullscreen-cards-1",
   "./manifest.webmanifest",
   "./assets/icon.svg"
 ];
