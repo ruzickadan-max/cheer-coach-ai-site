@@ -1,10 +1,10 @@
-const CACHE_NAME = "cheer-coach-ai-shell-v6";
+const CACHE_NAME = "cheer-coach-ai-shell-v7";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./cards.js?v=cards-20261018-roundtrip-cards",
-  "./app.js?v=backup-import-1",
+  "./app.js?v=home-card-access-1",
   "./manifest.webmanifest",
   "./assets/icon.svg"
 ];

@@ -336,6 +336,14 @@
       }
     }
   });
+  document.addEventListener("keydown", event => {
+    const open = event.target.closest?.("[data-open-card]");
+    if (!open || open.closest("#library-grid") || event.target !== open) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openCard(open.dataset.openCard);
+    }
+  });
   $("#plan-form").addEventListener("submit", event => {
     event.preventDefault();
     const blocks = $$(".block-row", $("#block-editor")).map(row => {
